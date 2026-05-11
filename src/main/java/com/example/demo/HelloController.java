@@ -8,7 +8,7 @@ public class HelloController {
 	@GetMapping("/hello")
 	public String hello()
 	{
-		return "welcome to microservices-v1- vardhan";
+		return "welcome to microservices-v1-vardhan";
 	}
 
 }

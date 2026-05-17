@@ -69,7 +69,7 @@ pipeline {
 
     post {
         success { echo 'Pipeline completed successfully!' }
-        failure { echo 'Pipeline FAILED — check logs above.' }
+        failure { echo 'Pipeline FAILED — check logs above' }
         always  { cleanWs() }
     }
 }

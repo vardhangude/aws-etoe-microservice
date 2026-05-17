@@ -14,6 +14,14 @@ pipeline {
 
     stages {
 
+        stage('Debug') {
+            steps {
+                sh 'echo $JAVA_HOME'
+                sh 'java -version'
+                sh 'mvn -version'
+            }
+        }
+
         stage('Clone') {
             steps {
                 git branch: 'master',

@@ -4,6 +4,7 @@ pipeline {
     tools {
         jdk 'JDK-21'      // Must match Jenkins Tools config name
         maven 'Maven-3'   // Must match Jenkins Tools config name
+        git 'Git'
     }
 
     environment {

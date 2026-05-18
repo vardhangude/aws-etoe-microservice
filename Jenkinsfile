@@ -24,7 +24,7 @@ pipeline {
 
         stage('Clone') {
             steps {
-                git branch: 'master',
+                git branch: '1.0',
                     credentialsId: 'e450d76f-fc65-4396-b709-850471e2194a',
                     url: "${GIT_REPO}"
             }

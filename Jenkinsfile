@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     tools {
-        jdk 'JDK-21'      // Must match Jenkins Tools config name
-        maven 'Maven-3'   // Must match Jenkins Tools config name
+        jdk 'JDK-21'
+        maven 'Maven-3'
     }
 
     environment {
@@ -33,7 +33,6 @@ pipeline {
         stage('Build') {
             steps {
                 sh 'mvn clean package -DskipTests'
-                // Output: target/<app>.jar or .war
             }
         }
 
@@ -56,7 +55,9 @@ pipeline {
         }
 
         stage('Deploy') {
-            when { branch 'main' }
+            when {
+                branch 'main'
+            }
             steps {
                 sh """
                     mkdir -p ${DEPLOY_PATH}
@@ -65,12 +66,18 @@ pipeline {
                 """
             }
         }
-    	
+
+    }   // <-- missing closing brace for stages
 
     post {
-        success { echo 'Pipeline completed successfully!' }
-        failure { echo 'Pipeline FAILED — check logs above' }
-        always  { cleanWs() }
+        success {
+            echo 'Pipeline completed successfully!'
+        }
+        failure {
+            echo 'Pipeline FAILED — check logs above'
+        }
+        always {
+            cleanWs()
+        }
     }
-}
 }

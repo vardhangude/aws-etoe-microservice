@@ -13,7 +13,6 @@ pipeline {
     }
 
     stages {
-
         stage('Debug') {
             steps {
                 sh 'echo $JAVA_HOME'
@@ -56,7 +55,7 @@ pipeline {
 
         stage('Deploy') {
             when {
-                branch 'main'
+                branch '1.0'
             }
             steps {
                 sh """
@@ -69,14 +68,8 @@ pipeline {
 
     }  
     post {
-        success {
-            echo 'Pipeline completed successfully!'
-        }
-        failure {
-            echo 'Pipeline failed — check logs above'
-        }
-        always {
-            cleanWs()
-        }
+        success { echo 'Pipeline completed successfully!' }
+        failure { echo 'Pipeline failed — check logs above' }
+        always { cleanWs() }
     }
 }

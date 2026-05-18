@@ -1,70 +1,75 @@
 pipeline {
-    agent any {
+    agent any
+
     tools {
-        maven 'Maven-3'
-        jdk 'JDK-21'
-    }
-        environment {
-            APP_NAME = 'my_java_app'
-            GIT_REPO = 'https://github.com/vardhangude/aws-etoe-microservice.git'
-            DEPLOY_PATH = '/opt/apps'
-        }
+        jdk 'JDK-21'      // Must match Jenkins Tools config name
+        maven 'Maven-3'   // Must match Jenkins Tools config name
     }
 
-    stages{
-        stage ('Debug') {
-            steps{
+    environment {
+        APP_NAME    = 'my-java-app'
+        GIT_REPO    = 'https://github.com/vardhangude/aws-etoe-microservice.git'
+        DEPLOY_PATH = '/opt/apps'
+    }
+
+    stages {
+
+        stage('Debug') {
+            steps {
                 sh 'echo $JAVA_HOME'
                 sh 'java -version'
                 sh 'mvn -version'
             }
         }
 
-        stage ('Clone') {
+        stage('Clone') {
             steps {
-                git branch: '1.0'
-                url: "${GIT_REPO}"
+                git branch: 'master',
+                    credentialsId: 'e450d76f-fc65-4396-b709-850471e2194a',
+                    url: "${GIT_REPO}"
             }
         }
 
-        stage ('Build') {
-               steps {
-                 sh 'mvn clean package -DskipTests'
-               }
+        stage('Build') {
+            steps {
+                sh 'mvn clean package -DskipTests'
+                // Output: target/<app>.jar or .war
+            }
         }
 
-        stage ('Test') {
+        stage('Test') {
             steps {
                 sh 'mvn test'
             }
             post {
                 always {
-                    junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'     
+                    junit allowEmptyResults: true,
+                          testResults: 'target/surefire-reports/*.xml'
                 }
             }
         }
 
-        stage ('Package') {
+        stage('Package') {
             steps {
                 archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
             }
         }
 
         stage('Deploy') {
-            when { branch '1.0' }
+            when { branch 'main' }
             steps {
                 sh """
                     mkdir -p ${DEPLOY_PATH}
-                    cp target/*.jar ${DEPLOY_PATH}/{APP_NAME}.jar
-                    echo 'DEPLOYED!'
+                    cp target/*.jar ${DEPLOY_PATH}/${APP_NAME}.jar
+                    echo 'Deployed!'
                 """
             }
         }
+    	
 
-        post {
-            success { echo 'Pipeline completed Succesfully' }
-            failure { echo 'Pipeline Failed - check logs above' }
-            always { cleansWs() }
-        }
+    post {
+        success { echo 'Pipeline completed successfully!' }
+        failure { echo 'Pipeline FAILED — check logs above' }
+        always  { cleanWs() }
     }
 }

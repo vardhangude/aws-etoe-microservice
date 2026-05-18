@@ -67,8 +67,7 @@ pipeline {
             }
         }
 
-    }   // <-- missing closing brace for stages
-
+    }  
     post {
         success {
             echo 'Pipeline completed successfully!'
